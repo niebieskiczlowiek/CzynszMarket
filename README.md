@@ -1,3 +1,1 @@
 # CzynszMarket
-kqqwekqow
-chujs
