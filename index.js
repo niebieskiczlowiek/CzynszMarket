@@ -1,8 +1,9 @@
 const express = require('express')
+//dodawanie expressa
 const port = 5500
-
 const app = express()
 app.set('view engine', 'hbs')
+//dodawanie szablonó hbs do renderowania stron
 
 
 app.get('/', (req, res) => {
@@ -17,16 +18,9 @@ app.get('/login', (req, res) => {
 app.get('/home', (req, res) => {
     res.render('home')
 });
+// pod strony ^^
 
 
 
 app.listen(port)
-
-//Wyjaśnienie dla miłoszka co tu sie stało xD:
-//
-//Ten plik to główny plik aplikacji so far 
-//Tu masz port, express.js hbs'a i podstrony
-//
-//pliki jsonnowe i node_modules to jakies pierdoły dodane przez npma (możemy miec je gdzies)
-//
-//zamiast html robimy hbs by móc to wyświetlać na podstronach 
+//Aktywanowanie aplikacji
