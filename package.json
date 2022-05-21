@@ -1,0 +1,24 @@
+{
+  "name": "czynszmarket",
+  "version": "1.0.0",
+  "description": "CzynszMarket is a database project based on Steam Market. Our plans for it is creating an app where users will be able to sell and buy ingame products for money.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niebieskiczlowiek/CzynszMarket.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/niebieskiczlowiek/CzynszMarket/issues"
+  },
+  "homepage": "https://github.com/niebieskiczlowiek/CzynszMarket#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.0-beta1",
+    "express": "^4.18.1",
+    "hbs": "^4.2.0"
+  }
+}
