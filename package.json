@@ -18,10 +18,14 @@
   },
   "homepage": "https://github.com/niebieskiczlowiek/CzynszMarket#readme",
   "dependencies": {
+    "body-parser": "^1.20.0",
     "bootstrap": "^5.2.0-beta1",
+    "cookie-parser": "^1.4.6",
     "express": "^4.18.1",
     "express-handlebars": "^6.0.6",
+    "express-session": "^1.17.3",
     "hbs": "^4.2.0",
+    "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.16"
   }
