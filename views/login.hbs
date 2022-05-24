@@ -8,6 +8,14 @@
 </head>
 <body>
     <h1>Login Page here</h1>
-    <button type="button" onClick="window.location = 'http://localhost:5500/home'"> Login to account: </button>
+    <form action="http://localhost:5500/home">
+        <label for="login">Login</label>
+        <input type = "login" id="login" required>
+        
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+
+        <input type="submit">
+    </form>
 </body>
 </html>
