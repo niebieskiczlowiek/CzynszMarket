@@ -11,5 +11,31 @@
 <body>
     <h1>Home Page Here</h1>
     <button type"button" onClick="window.location = 'http://localhost:5500/'">Logout</button>
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Email Posiadacza</th>
+            <th>Cena</th>
+            <th>Gra</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each products}}
+        <tr>
+            <td>{{this.Id}}</td>
+            <td>{{this.Nazwa}}</td>
+            <td>{{this.Cena}}</td>
+            <td>{{this.Ilosc}}</td>
+            <td>{{this.Kategoria}}</td>
+            <td>
+                <form action="product/{{this.Id}}/delete" method="POST">
+                  <button type="submit" class="btn btn-sm btn-outlince-danger">&times;</button>
+                </form>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+    </table>
 </body>
 </html>
