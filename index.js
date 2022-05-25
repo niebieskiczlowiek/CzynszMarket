@@ -9,11 +9,7 @@ const { request } = require('./database')
 
 var query = "SELECT * FROM Uzytkownicy"
 
-
 // app settings
-app.set('view engine', 'hbs');
-app.use(express.static('public'));
-var port = 5500
 
 app.get('/', (req, res) => {
     res.render('index');
