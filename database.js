@@ -5,7 +5,7 @@ const config = {
     user: 'Adam',
     password: 'root1234',
     database: 'RYNEK',
-    server: 'LAPTOP-NR3C1991\SQLEXPRESS',
+    server: 'localhost',
     options: {
       trustServerCertificate: true
     },
@@ -29,13 +29,11 @@ async function connect() {
     }   
     return pool
 }
+
 async function request() {
     const pool = await connect();
-
     return new sql.Request(pool);
 }
-
-request();
 
 module.exports = {
     request

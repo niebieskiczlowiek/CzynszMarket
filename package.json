@@ -26,7 +26,9 @@
     "express-session": "^1.17.3",
     "hbs": "^4.2.0",
     "morgan": "^1.10.0",
+    "mssql": "^8.1.1",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.16",
+    "tedious": "^14.5.0"
   }
 }

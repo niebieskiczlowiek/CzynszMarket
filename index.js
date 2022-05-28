@@ -1,18 +1,32 @@
-// app requirements
+// app modules
 var express = require('express');
-var hbs = require('express-handlebars')
 var app = express();
+var hbs = require('express-handlebars')
+const path = require('path');
 var router = express.Router();
-const sql = require('mssql')
+const session = require('express-session');
 const req = require('express/lib/request')
 const { request } = require('./database')
+var bodyParser = require('body-parser')
+var sql = require('mssql')
+var port = 5500
 
-var query = "SELECT * FROM Uzytkownicy"
 
-// app settings
+//app settings
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
+app.use(express.json());
+app.use(session({
+  secret: 'iLoveSql',
+  resave: false,
+  saveUninitialized: false
+}));
 
 app.get('/', (req, res) => {
-    res.render('index');
+    res.render('index');    
 });
 app.get('/register', (req, res) => {
     res.render('register')
@@ -20,6 +34,8 @@ app.get('/register', (req, res) => {
 app.get('/login', (req, res) => {
     res.render('login')
 });
+app.post('/login', login);
+
 app.get('/home', (req, res) => {
     res.render('home')
 });
@@ -36,3 +52,23 @@ router.get('/testconnect', function(req, res, next) {
     res.render('index')
 });
 
+async function login(req, res) {
+    var {login, password} = req.body;
+    console.log(login, password)
+      try {
+        const dbRequest = await request()
+        const result = await dbRequest
+          .input('Nazwa_Uzytkownika', sql.VarChar(50), login)
+          .input('Haslo', sql.VarChar(50), password)
+          .query('SELECT * FROM Uzytkownicy WHERE Nazwa_Uzytkownika = @Nazwa_Uzytkownika AND Haslo = @Haslo')
+        if (result.rowsAffected[0] === 1) {
+          login = req.session.userLogin;
+          res.render('home')
+        } else {
+          res.render('login', {title: 'Logownie', error: 'Login lub hasło niepoprawne'})
+        }
+      } catch (err) {
+        res.render('login', {title: 'Zjebałeś ', error: 'Error'})
+        console.error(err)
+      }
+}

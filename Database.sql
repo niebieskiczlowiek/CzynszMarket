@@ -42,6 +42,4 @@ GO
 SELECT * FROM Uzytkownicy
 
 INSERT INTO Uzytkownicy VALUES
-('Admin', '1000', 'Adam', 'Czyz', 'TakXD', 'root1234')
-
-
+('Admin', '1000', 'Adam', 'Czyz', 'TakXD', 'root1234'),
