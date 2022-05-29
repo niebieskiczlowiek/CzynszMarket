@@ -26,7 +26,8 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    res.render('index');    
+    req.session.destroy();
+    res.render('index');
 });
 app.get('/register', (req, res) => {
     res.render('register')
@@ -53,6 +54,7 @@ router.get('/testconnect', function(req, res, next) {
 });
 
 async function login(req, res) {
+    var xd = "Siemano"
     var {login, password} = req.body;
     console.log(login, password)
       try {
@@ -62,8 +64,8 @@ async function login(req, res) {
           .input('Haslo', sql.VarChar(50), password)
           .query('SELECT * FROM Uzytkownicy WHERE Nazwa_Uzytkownika = @Nazwa_Uzytkownika AND Haslo = @Haslo')
         if (result.rowsAffected[0] === 1) {
-          login = req.session.userLogin;
-          res.render('home')
+          req.session.userLogin = login;
+          res.render('home', {login: req.session.userLogin})
         } else {
           res.render('login', {title: 'Logownie', error: 'Login lub hasło niepoprawne'})
         }
@@ -72,3 +74,11 @@ async function login(req, res) {
         console.error(err)
       }
 }
+
+
+async function showItems(req, res) {
+// To Do
+}
+
+// to clear session data -> req.session.destroy();
+  
