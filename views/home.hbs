@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <title>Home</title>
+    <title>{{{login}}}'s home page</title>
 </head>
 <body>
     <h1>Welcome {{{login}}}</h1>
@@ -17,17 +17,16 @@
             <th>Id</th>
             <th>Email Posiadacza</th>
             <th>Cena</th>
-            <th>Gra</th>
+            <th>Gra</th>   
         </tr>
     </thead>
     <tbody>
         {{#each products}}
         <tr>
-            <td>{{this.Id}}</td>
-            <td>{{this.Nazwa}}</td>
-            <td>{{this.Cena}}</td>
-            <td>{{this.Ilosc}}</td>
-            <td>{{this.Kategoria}}</td>
+            <td>{{{Id}}}</td>
+            <td>{{{Email}}}</td>
+            <td>{{{Cena}}}</td>
+            <td>{{{Gra}}}</td>
             <td>
                 <form action="product/{{this.Id}}/delete" method="POST">
                   <button type="submit" class="btn btn-sm btn-outlince-danger">&times;</button>

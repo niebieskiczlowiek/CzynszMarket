@@ -26,7 +26,7 @@ app.use(session({
 }));
 
 app.get('/', (req, res) => {
-    req.session.destroy();
+    req.session.destroy()
     res.render('index');
 });
 app.get('/register', (req, res) => {
@@ -54,9 +54,7 @@ router.get('/testconnect', function(req, res, next) {
 });
 
 async function login(req, res) {
-    var xd = "Siemano"
     var {login, password} = req.body;
-    console.log(login, password)
       try {
         const dbRequest = await request()
         const result = await dbRequest
@@ -66,18 +64,30 @@ async function login(req, res) {
         if (result.rowsAffected[0] === 1) {
           req.session.userLogin = login;
           res.render('home', {login: req.session.userLogin})
+          console.log("User", login, "just logged on")
         } else {
           res.render('login', {title: 'Logownie', error: 'Login lub hasło niepoprawne'})
         }
       } catch (err) {
-        res.render('login', {title: 'Zjebałeś ', error: 'Error'})
+        res.render('login', {error: 'Error'})
         console.error(err)
       }
 }
 
-
+//próbowałem coś tu robić ale nie wiem na razie xD
 async function showItems(req, res) {
-// To Do
+//To do
+  let products = []
+  try {
+    const dbRequest = await Request()
+    let result;
+
+    result = await dbRequest
+      .query('SELECT * FROM Przedmioty')
+
+  } catch (err) {
+    console.error(err)
+  }
 }
 
 // to clear session data -> req.session.destroy();
