@@ -75,19 +75,29 @@ async function login(req, res) {
 }
 
 //próbowałem coś tu robić ale nie wiem na razie xD
-async function showItems(req, res) {
-//To do
+async function showProducts(req, res) {
   let products = []
+
   try {
-    const dbRequest = await Request()
+    const dbRequest = await request()
     let result;
-
     result = await dbRequest
-      .query('SELECT * FROM Przedmioty')
+        .input('Nazwa_Przedmiotu', sql.VarChar(50), req.query.name)
+        .input('Gra', sql.VarChar(50), req.query.game)
+        .query('SELECT * FROM Produkty WHERE Kategoria = @Kategoria')
 
+    products = result.recordset
   } catch (err) {
-    console.error(err)
+    console.error('Nie udało się pobrać produktów', err)
   }
+
+  res.render('index', { 
+    title: 'Lista produktów', 
+    products: products, 
+    message: res.message, 
+    kategoria: req.query.kategoria,
+    userLogin: req.session?.userLogin
+   })
 }
 
 // to clear session data -> req.session.destroy();

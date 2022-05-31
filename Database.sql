@@ -42,4 +42,10 @@ GO
 SELECT * FROM Uzytkownicy
 
 INSERT INTO Uzytkownicy VALUES
-('Admin', '1000', 'Adam', 'Czyz', 'TakXD', 'root1234'),
+('Admin', '1000', 'Adam', 'Czyz', 'TakXD', 'root1234')
+
+INSERT INTO gry VALUES
+('Crab Game')
+
+INSERT INTO przedmioty VALUES
+('Golden Sandals', 1, 'Adam@rynek.com', 'Crab Game')
