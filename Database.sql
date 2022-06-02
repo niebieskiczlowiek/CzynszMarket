@@ -49,3 +49,14 @@ INSERT INTO gry VALUES
 
 INSERT INTO przedmioty VALUES
 ('Golden Sandals', 1, 'Adam@rynek.com', 'Crab Game')
+
+ALTER table przedmioty
+add rzadkosc varchar(30) check(rzadkosc = 'uncommon' OR rzadkosc = 'common' OR rzadkosc = 'rare' OR rzadkosc = 'epic' OR rzadkosc = 'legendary')
+
+update przedmioty
+SET rzadkosc = 'epic'
+where Id_Przedmiotu = 1
+
+ALTER table przedmioty
+alter column rzadkosc varchar(30) not null check(rzadkosc = 'uncommon' OR rzadkosc = 'common' OR rzadkosc = 'rare' OR rzadkosc = 'epic' OR rzadkosc = 'legendary')
+

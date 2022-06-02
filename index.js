@@ -1,57 +1,64 @@
-// app modules
-var express = require('express');
-var app = express();
-var hbs = require('express-handlebars')
+// app modules and identifiers
+const express = require('express');
+const app = express();
+const hbs = require('express-handlebars')
 const path = require('path');
-var router = express.Router();
+const router = express.Router();
 const session = require('express-session');
-const req = require('express/lib/request')
-const { request } = require('./database')
-var bodyParser = require('body-parser')
-var sql = require('mssql')
-var port = 5500
+const req = require('express/lib/request');
+const { request } = require('./database');
+const bodyParser = require('body-parser');
+const sql = require('mssql');
+//const logger = require('morgan');
+const port = 5500
 
-
-//app settings
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
+
+//app.use(logger('dev'));
 app.use(express.json());
 app.use(session({
   secret: 'iLoveSql',
   resave: false,
   saveUninitialized: false
 }));
+app.use(express.urlencoded({
+  extended: true
+}))
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/', (req, res) => {
-    req.session.destroy()
-    res.render('index');
-});
-app.get('/register', (req, res) => {
-    res.render('register')
-});
-app.get('/login', (req, res) => {
-    res.render('login')
-});
-app.post('/login', login);
+//Functions
 
-app.get('/home', (req, res) => {
-    res.render('home')
-});
-// pod strony ^^
+async function showItems(req, res) {
+  let items = []
 
-app.listen(port, (error) =>{
-    if(error) throw error
-    console.log("App running on port", port)
-})
+  try {
+    const dbRequest = await request()
+    let result;
 
-//test connection
-router.get('/testconnect', function(req, res, next) {
-    sql.getdata();
-    res.render('index')
-});
+    if (req.query.rarity) {
+      result = await dbRequest
+        .input('rzadkosc', sql.VarChar(30), req.query.rarity)
+        .query('SELECT * FROM przedmioty WHERE rzadkosc = @rzadkosc')
+      console.log(req.query.rarity)
+    } else {
+      result = await dbRequest.query('SELECT * FROM przedmioty')
+    }
+
+    items = result.recordset
+  } catch(err) {
+    console.error(err)
+  }
+  console.log(items)
+
+  res.render('home', { 
+    title: 'Lista produktów', 
+    items: items, 
+    rarity: req.query.rarity,
+    login: req.session?.userLogin
+   })
+}
 
 async function login(req, res) {
     var {login, password} = req.body;
@@ -63,8 +70,9 @@ async function login(req, res) {
           .query('SELECT * FROM Uzytkownicy WHERE Nazwa_Uzytkownika = @Nazwa_Uzytkownika AND Haslo = @Haslo')
         if (result.rowsAffected[0] === 1) {
           req.session.userLogin = login;
-          res.render('home', {login: req.session.userLogin})
+          //res.render('home', {login: req.session.userLogin})
           console.log("User", login, "just logged on")
+          showItems(req, res)
         } else {
           res.render('login', {title: 'Logownie', error: 'Login lub hasło niepoprawne'})
         }
@@ -74,31 +82,27 @@ async function login(req, res) {
       }
 }
 
-//próbowałem coś tu robić ale nie wiem na razie xD
-async function showProducts(req, res) {
-  let products = []
-
-  try {
-    const dbRequest = await request()
-    let result;
-    result = await dbRequest
-        .input('Nazwa_Przedmiotu', sql.VarChar(50), req.query.name)
-        .input('Gra', sql.VarChar(50), req.query.game)
-        .query('SELECT * FROM Produkty WHERE Kategoria = @Kategoria')
-
-    products = result.recordset
-  } catch (err) {
-    console.error('Nie udało się pobrać produktów', err)
-  }
-
-  res.render('index', { 
-    title: 'Lista produktów', 
-    products: products, 
-    message: res.message, 
-    kategoria: req.query.kategoria,
-    userLogin: req.session?.userLogin
-   })
+async function loginPage(req, res) {
+  res.render('login', { title: 'Logowanie' })
 }
 
-// to clear session data -> req.session.destroy();
+//app get routing
+
+app.get('/', (req, res) => {
+    res.render('index');
+});
+app.get('/register', (req, res) => {
+    res.render('register')
+});
+app.get('/login', loginPage);
+app.get('/home', showItems);
+app.post('/login', login);
+
+//app listen
+
+app.listen(port, (error) =>{
+  if(error) throw error
+  console.log("App running on port", port)
+})
+
   
