@@ -52,9 +52,12 @@ async function showItems(req, res) {
   }
   console.log(items)
 
+  /* Rendering the home page with the items from the database. */
   res.render('home', { 
     title: 'Lista produktów', 
+    //name = 
     items: items, 
+    message: res.message, 
     rarity: req.query.rarity,
     login: req.session?.userLogin
    })
