@@ -1,3 +1,4 @@
-1. Funkcja która wyświetla dostępne produkty
-2. Filtrowanie produktów
+1. Funkcja która wyświetla dostępne produkty [done]
+2. Filtrowanie produktów, [done]
 3. Wyświetlanie kont użytkowników
+4. Saldo i możliwość zakupu produktów

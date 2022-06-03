@@ -31,32 +31,29 @@ CREATE TABLE Oferty(
 
 CREATE TABLE Przedmioty(
 	Nazwa_Przedmiotu VARCHAR(50) NOT NULL CHECK(len(Nazwa_Przedmiotu) >= 5),
-	Id_Przedmiotu INT PRIMARY KEY,
+	Id_Przedmiotu INT NOT NULL PRIMARY KEY IDENTITY,
 	Email_uzytkownika VARCHAR(50) NOT NULL REFERENCES Uzytkownicy(Email),
-	Gra VARCHAR(50) NOT NULL REFERENCES Gry(Tytul)
+	Gra VARCHAR(50) NOT NULL REFERENCES Gry(Tytul),
+	rzadkosc VARCHAR(30) NOT NULL CHECK(rzadkosc = 'uncommon' OR rzadkosc = 'common' OR rzadkosc = 'rare' OR rzadkosc = 'epic' OR rzadkosc = 'legendary')
 )
 
-USE RYNEK
-GO
-
-SELECT * FROM Uzytkownicy
-
 INSERT INTO Uzytkownicy VALUES
-('Admin', '1000', 'Adam', 'Czyz', 'TakXD', 'root1234')
+('Admin', 1000, 'Adam', 'Czyz', 'Adam@rynek.com', 'root1234'),
+('Milos', 420, 'Miłosz', 'Pietrzak','Milos@rynek.com', 'password'),
+('Olsson_PL', 35, 'Oliwier', 'Bernatowicz', 'Polskagurom@gmail.pl', 'BugHonorOjczyzna')
+
 
 INSERT INTO gry VALUES
-('Crab Game')
+('Crab Game'),
+('Clash Royale'),
+('Whos your daddy?')
 
 INSERT INTO przedmioty VALUES
-('Golden Sandals', 1, 'Adam@rynek.com', 'Crab Game')
+('Golden Sandals', 'Adam@rynek.com', 'Crab Game','epic' ),
+('X-BOW', 'Polskagurom@gmail.pl', 'Clash Royale', 'epic'),
+('Your mom', 'Milos@rynek.com', 'Whos your daddy?','legendary')
 
-ALTER table przedmioty
-add rzadkosc varchar(30) check(rzadkosc = 'uncommon' OR rzadkosc = 'common' OR rzadkosc = 'rare' OR rzadkosc = 'epic' OR rzadkosc = 'legendary')
 
-update przedmioty
-SET rzadkosc = 'epic'
-where Id_Przedmiotu = 1
-
-ALTER table przedmioty
-alter column rzadkosc varchar(30) not null check(rzadkosc = 'uncommon' OR rzadkosc = 'common' OR rzadkosc = 'rare' OR rzadkosc = 'epic' OR rzadkosc = 'legendary')
-
+select * from gry
+select * from przedmioty
+select * from uzytkownicy

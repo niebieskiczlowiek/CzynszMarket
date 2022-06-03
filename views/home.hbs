@@ -14,7 +14,7 @@
 
     <form>
         <select name="rarity">
-            <option value="all"> See all </option>
+            <option value=""> See all </option>
             <option value="common"> Common </option>
             <option value="uncommon"> Uncommon </option>
             <option value="rare"> Rare </option>
@@ -38,11 +38,11 @@
     <tbody>
         {{#each items}}
         <tr>
-            <td>{{ this.name }}</td>
-            <td>{{ this.game }}</td>
-            <td>{{ this.id }}</td>
-            <td>{{ this.owner }}</td>
-            <td>{{ this.rarity }}</td>
+            <td>{{ this.Nazwa_Przedmiotu }}</td>
+            <td>{{ this.Gra }}</td>
+            <td>{{ this.Id_Przedmiotu }}</td>
+            <td>{{ this.Email_uzytkownika }}</td>
+            <td>{{ this.rzadkosc }}</td>
         </tr>
         {{/each}}
     </tbody>

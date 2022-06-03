@@ -31,7 +31,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Functions
 
 async function showItems(req, res) {
-  let items = []
+  let items = [];
+  login = req.session?.userLogin
+  rarity = req.query.rarity
 
   try {
     const dbRequest = await request()
@@ -41,9 +43,10 @@ async function showItems(req, res) {
       result = await dbRequest
         .input('rzadkosc', sql.VarChar(30), req.query.rarity)
         .query('SELECT * FROM przedmioty WHERE rzadkosc = @rzadkosc')
-      console.log(req.query.rarity)
+      console.log('User', login, 'wants to see all', rarity, 'items!')
     } else {
       result = await dbRequest.query('SELECT * FROM przedmioty')
+      
     }
 
     items = result.recordset
@@ -55,7 +58,6 @@ async function showItems(req, res) {
   /* Rendering the home page with the items from the database. */
   res.render('home', { 
     title: 'Lista produktów', 
-    //name = 
     items: items, 
     message: res.message, 
     rarity: req.query.rarity,
@@ -89,8 +91,7 @@ async function loginPage(req, res) {
   res.render('login', { title: 'Logowanie' })
 }
 
-//app get routing
-
+//app gets
 app.get('/', (req, res) => {
     res.render('index');
 });
@@ -99,10 +100,12 @@ app.get('/register', (req, res) => {
 });
 app.get('/login', loginPage);
 app.get('/home', showItems);
+
+//app posts
 app.post('/login', login);
 
-//app listen
 
+//app listen
 app.listen(port, (error) =>{
   if(error) throw error
   console.log("App running on port", port)
