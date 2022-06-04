@@ -59,14 +59,13 @@ async function login(req, res) {
 
 async function register(req, res) {
   var {login, email, password, name, surname} = req.body
-  console.log(req.body)
 
   try{
     const dbRequest = await request()
 
     const result = await dbRequest
       .input('login', sql.VarChar(50), login)
-      .input('email', sql.VarChar(50), password)
+      .input('email', sql.VarChar(50), email)
       .input('password', sql.VarChar(50), password)
       .input('name', sql.VarChar(50), name)
       .input('surname', sql.VarChar(50), surname)
