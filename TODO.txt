@@ -1,4 +1,19 @@
 1. Funkcja która wyświetla dostępne produkty [done]
 2. Filtrowanie produktów, [done]
-3. Wyświetlanie kont użytkowników
-4. Saldo i możliwość zakupu produktów
+
+3. Możliwość zakupu dostępnych produktów:
+    - dodać w ogóle ceny przedmiotów XDD
+    - przy produktach będzie jakiś przycisk buy czy coś (ale można też zrobić po prostu jeden i wpisuje się id 
+    itemu który chce się kupić to będzie chyba prostsze) - dobrze by było gdyby ten przycisk przekierowywał by na
+    nową podstronę /buyItem żeby nie było komplikacji jak z loginem
+    - to id itemu które chce sie kupić będzie wysyłane do serwera i tam
+        1. Serwer sprawdzi czy obecnie zalogowany użytkownik ma więcej hajsu niż kosztuje ten przedmiot
+        2. Jeśli tak - 
+            - Serwer przynzaje posiadaczowi odpowiednią kwotę
+            - Zabiera odpowiednią kwotę z konta kupującego
+            - Zmienia posiadacza itemu na tego co kupował (najlepiej wszystko zrobić w takiej kolejności jak jest tutaj)
+        3. Jeśli nie - 
+            - komunikat że za mało hajsu jest
+
+4. Wyświetlanie kont użytkowników.
+5. Możliwość wystawiania produktów na sprzedaż
