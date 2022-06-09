@@ -164,6 +164,23 @@ async function addItem(req, res) {
   }
 }
 
+async function deleteItem(req, res) {
+  const ID = req.body.ID
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .query('DELETE FROM Przedmioty WHERE Id_Przedmiotu = @Id')
+
+    if (result.rowsAffected[0] === 1) {
+      res.render('deleteItem', { message: 'Succesfully deleted item with Id' + ID} )
+    }
+  } catch(err) {
+    console.error('Failed to delete item', err)
+  }
+}
+
 async function showUserProfile(req, res) {
   let data = []
   try {
@@ -185,6 +202,13 @@ async function showUserProfile(req, res) {
 async function showAddItem(req, res) {
   if (req.session?.userLogin === 'Admin'){
     res.render('addItem')
+  } else {
+    res.send(" You're not an admin >:(( ")
+  }
+}
+async function showDeleteItem(req, res) {
+  if (req.session?.userLogin === 'Admin'){
+    res.render('deleteItem')
   } else {
     res.send(" You're not an admin >:(( ")
   }
@@ -216,11 +240,13 @@ app.get('/userProfile', showUserProfile)
 app.get('/inventory', showInventory)
 app.get('/adminPanel', showAdminPanel)
 app.get('/addItem', showAddItem);
+app.get('/deleteItem', showDeleteItem)
 
 //app posts
 app.post('/login', login);
 app.post('/addItem', addItem);
 app.post('/register', register)
+app.post('/deleteItem', deleteItem)
 
 
 //app listen
