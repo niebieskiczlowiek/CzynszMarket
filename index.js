@@ -43,7 +43,7 @@ async function login(req, res) {
         .input('Haslo', sql.VarChar(50), password)
         .query('SELECT Email FROM Uzytkownicy WHERE Nazwa_Uzytkownika = @Nazwa_Uzytkownika AND Haslo = @Haslo')
       if (result.rowsAffected[0] === 1) {
-        req.session.userEmail = result.recordset[0];
+        req.session.userEmail = result.recordset[0].Email;
         req.session.userLogin = login;
         console.log("User", login, "just logged on")
         showItems(req, res);
@@ -118,23 +118,84 @@ async function showItems(req, res) {
    })
 }
 
-async function addItem(req, res, next) { //addItem not in use for now
+async function showInventory(req, res) {
+  let items = [];
+  let login = req.session?.userLogin;
+  let email = req.session?.userEmail;
+
   try {
     const dbRequest = await request()
-    await dbRequest
-      .input('Nazwa_Przedmiotu', sql.VarChar(50), req.body.name)
-      .input('Email_uzytkownika', sql.VarChar(50), req.session?.userEmail)
-      .input('Gra', sql.VarChar(50), req.body.game)
-      .input('rzadkosc', sql.VarChar(50), req.body.rarity)
-      .query('INSERT INTO Przedmioty VALUES (@Nazwa_Przedmiotu, @Email_uzytkownika, @Gra, @rzadkosc)')
 
-    res.message = 'New item succecsfully added'
+    const result = await dbRequest
+        .input('email', sql.VarChar(50), email)
+        .query('SELECT * FROM przedmioty WHERE Email_Uzytkownika = @email')
+      if (result.rowsAffected[0] === 0) {
+        res.render('inventory', {noItem: 'You have no items in your inventory :((', login: req.session?.userLogin} )
+      } 
+      items = result.recordset
+    } catch(err) {
+      console.error(err)
+    }
+
+  res.render('inventory', { 
+    items: items, 
+    login: req.session?.userLogin
+   })
+}
+
+async function addItem(req, res) {
+  var {itemName, owner, game, rarity, price} = req.body
+  try {
+    const dbRequest = await request()
+    var result = await dbRequest
+      .input('Nazwa_Przedmiotu', sql.VarChar(50), req.body.itemName)
+      .input('Email_uzytkownika', sql.VarChar(50), owner)
+      .input('Gra', sql.VarChar(50), req.body.game)
+      .input('Rzadkosc', sql.VarChar(50), req.body.rarity)
+      .input('Oferta', sql.VarChar(50), 'notToSell')
+      .input('Cena', sql.Money, req.body.price)
+      .query('INSERT INTO Przedmioty VALUES (@Nazwa_Przedmiotu, @Email_uzytkownika, @Gra, @Rzadkosc, @Oferta, @Cena)')
+
+    if (result.rowsAffected[0] === 1){
+      res.render('addItem', { message: 'Succesfully added item'})
+    }
   } catch (err) {
     console.error('Failed to add item', err)
-    console.log(req.session?.userEmail)
   }
 }
 
+async function showUserProfile(req, res) {
+  let data = []
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('login', sql.VarChar(50), req.session?.userLogin)
+      .query('SELECT Nazwa_Uzytkownika, Email, Saldo, Imie, Nazwisko FROM Uzytkownicy WHERE Nazwa_Uzytkownika = @login')
+      data = result.recordset
+    } catch(err) {
+      console.error(err)
+    }
+  res.render('userProfile', { 
+    login: req.session?.userLogin,
+    data: data,
+  })
+}
+
+async function showAddItem(req, res) {
+  if (req.session?.userLogin === 'Admin'){
+    res.render('addItem')
+  } else {
+    res.send(" You're not an admin >:(( ")
+  }
+}
+async function showAdminPanel(req, res) {
+  if (req.session?.userLogin === 'Admin'){
+    res.render('adminPanel')
+  } else {
+    res.send(" You're not an admin >:(( ")
+  }
+}
 async function loginPage(req, res) {
   res.render('login', { title: 'Logowanie' })
 }
@@ -150,10 +211,11 @@ async function logOut(req, res) {
 app.get('/', logOut)
 app.get('/register', registerPage);
 app.get('/login', loginPage);
-app.get('/home/', showItems);
-//app.get('/addItem', (req, res) => {
-//  res.render('addItem')
-//})
+app.get('/home', showItems);
+app.get('/userProfile', showUserProfile)
+app.get('/inventory', showInventory)
+app.get('/adminPanel', showAdminPanel)
+app.get('/addItem', showAddItem);
 
 //app posts
 app.post('/login', login);

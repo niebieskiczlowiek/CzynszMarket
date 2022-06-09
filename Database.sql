@@ -34,7 +34,9 @@ CREATE TABLE Przedmioty(
 	Id_Przedmiotu INT NOT NULL PRIMARY KEY IDENTITY,
 	Email_uzytkownika VARCHAR(50) NOT NULL REFERENCES Uzytkownicy(Email),
 	Gra VARCHAR(50) NOT NULL REFERENCES Gry(Tytul),
-	rzadkosc VARCHAR(30) NOT NULL CHECK(rzadkosc = 'uncommon' OR rzadkosc = 'common' OR rzadkosc = 'rare' OR rzadkosc = 'epic' OR rzadkosc = 'legendary')
+	rzadkosc VARCHAR(30) NOT NULL CHECK(rzadkosc = 'uncommon' OR rzadkosc = 'common' OR rzadkosc = 'rare' OR rzadkosc = 'epic' OR rzadkosc = 'legendary'),
+	oferta VARCHAR(30) NOT NULL CHECK(oferta = 'toSell' OR oferta = 'notToSell'),
+	cena MONEY
 )
 
 INSERT INTO Uzytkownicy VALUES
@@ -46,13 +48,31 @@ INSERT INTO Uzytkownicy VALUES
 INSERT INTO gry VALUES
 ('Crab Game'),
 ('Clash Royale'),
-('Whos your daddy?')
+('Whos your daddy?'),
+('Celeste'),
+('CS:GO'),
+('Dont Starve Together'),
+('Grand Theft Auto V'),
+('LEGO StarWars'),
+('SUPERHOT VR'),
+('Team Fortress 2'),
+('Terraria'),
+('Undertale'),
+('Red Dead Redemption 2')
 
 INSERT INTO przedmioty VALUES
-('Golden Sandals', 'Adam@rynek.com', 'Crab Game','epic' ),
-('X-BOW', 'Polskagurom@gmail.pl', 'Clash Royale', 'epic'),
-('Your mom', 'Milos@rynek.com', 'Whos your daddy?','legendary')
+('Golden Sandals', 'Adam@rynek.com', 'Crab Game','epic', 'toSell', 5),
+('X-BOW', 'Polskagurom@gmail.pl', 'Clash Royale', 'epic', 'toSell',  10),
+('Your mom', 'Milos@rynek.com', 'Whos your daddy?','legendary','notToSell', 0.5),
+('PP-Bizon | Facility Sketch', 'Adam@rynek.com', 'CS:GO', 'common', 'toSell', 2),
+('The Zenith', 'Adam@rynek.com', 'Terraria', 'legendary', 'notToSell', 15),
+('Sweater Vest', 'Milos@rynek.com', 'Dont Starve Together', 'rare', 'toSell', '6' )
 
+
+--cena jest w czynsz coinach -> 1 CzynszCoin = 6.9 zł
+
+USE RYNEK
+GO
 
 select * from gry
 select * from przedmioty
