@@ -83,7 +83,7 @@ async function showItems(req, res) {
   let items = [];
   login = req.session?.userLogin
   rarity = req.query.rarity
-
+  console.log(login, rarity)
   try {
     const dbRequest = await request()
     let result;
@@ -110,9 +110,7 @@ async function showItems(req, res) {
   console.log(items)
 
   res.render('home', { 
-    title: 'Lista produktów', 
     items: items, 
-    message: res.message, 
     rarity: req.query.rarity,
     login: req.session?.userLogin
    })
@@ -247,6 +245,7 @@ app.post('/login', login);
 app.post('/addItem', addItem);
 app.post('/register', register)
 app.post('/deleteItem', deleteItem)
+app.post('/home', showItems)
 
 
 //app listen

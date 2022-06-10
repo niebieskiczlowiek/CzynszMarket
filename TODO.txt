@@ -15,5 +15,7 @@
         3. Jeśli nie - 
             - komunikat że za mało hajsu jest
 
-4. Wyświetlanie kont użytkowników.
+4. Wyświetlanie kont użytkowników. [done - chyba]
 5. Możliwość wystawiania produktów na sprzedaż
+
+Zrobiłem też admin panel :) -> dodawanie i usuwanie itemków
