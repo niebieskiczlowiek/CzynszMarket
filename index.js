@@ -197,6 +197,72 @@ async function showUserProfile(req, res) {
   })
 }
 
+async function checkOwner(req, res) {
+  let email = req.session?.userEmail
+  console.log("user email:", email)
+  let ID = req.body.ID
+  let owner = ''
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .query('SELECT Email_Uzytkownika FROM Przedmioty WHERE Id_Przedmiotu = @Id')
+      owner = result.recordset[0].Email_Uzytkownika
+    } catch(err) {
+      console.error(err)
+    }
+  if (email === owner) {
+    checkOffer(req, res)
+  } else {  
+    res.render('sellItem', { message: 'You are not the owner of this item!'})
+  }
+}
+
+async function checkOffer(req, res) {
+  let ID = req.body.ID
+  let offer = ''
+  try {
+    const dbRequest = await request() 
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .query('SELECT Oferta FROM Przedmioty WHERE Id_Przedmiotu = @Id')
+      offer = result.recordset[0].Oferta
+    } catch(err) {
+      console.error(err)
+    }
+  if (offer === 'notToSell') {
+    sellItem(req, res)
+  } else {
+    res.render('sellItem', { message: 'This item is already set to sell !'})
+  }
+}
+
+async function sellItem(req, res) {
+  console.log("user login:", req.session?.userLogin)
+  const ID = req.body.ID
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .input('oferta', sql.VarChar(30), 'toSell')
+      .query('UPDATE Przedmioty SET Oferta = @oferta WHERE Id_Przedmiotu = @Id') 
+    if (result.rowsAffected[0] === 1) {
+      res.render('sellItem', { message: 'Succesfully sold item with Id' + ID} )
+    }
+  } catch(err) {
+    console.error('Failed to sell item', err)
+  }
+}
+
+
+
+async function showSellItem(req, res) {
+  res.render('sellItem', { login: req.session?.userLogin})
+}
+
 async function showAddItem(req, res) {
   if (req.session?.userLogin === 'Admin'){
     res.render('addItem')
@@ -204,6 +270,7 @@ async function showAddItem(req, res) {
     res.send(" You're not an admin >:(( ")
   }
 }
+
 async function showDeleteItem(req, res) {
   if (req.session?.userLogin === 'Admin'){
     res.render('deleteItem')
@@ -211,6 +278,7 @@ async function showDeleteItem(req, res) {
     res.send(" You're not an admin >:(( ")
   }
 }
+
 async function showAdminPanel(req, res) {
   if (req.session?.userLogin === 'Admin'){
     res.render('adminPanel')
@@ -218,6 +286,7 @@ async function showAdminPanel(req, res) {
     res.send(" You're not an admin >:(( ")
   }
 }
+
 async function loginPage(req, res) {
   res.render('login', { title: 'Logowanie' })
 }
@@ -239,12 +308,14 @@ app.get('/inventory', showInventory)
 app.get('/adminPanel', showAdminPanel)
 app.get('/addItem', showAddItem);
 app.get('/deleteItem', showDeleteItem)
+app.get('/sellItem', showSellItem)
 
 //app posts
 app.post('/login', login);
 app.post('/addItem', addItem);
 app.post('/register', register)
 app.post('/deleteItem', deleteItem)
+app.post('/sellItem', checkOwner)
 app.post('/home', showItems)
 
 
