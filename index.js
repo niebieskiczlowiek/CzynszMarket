@@ -259,11 +259,12 @@ async function sellItem(req, res) {
 
 async function buyItem(req, res) {
   let ID = req.body.ID
-  let price = ''
-  let buyerSaldo = ''
-  let sellerSaldo = ''
-  let owner = ''
-  let email = req.session?.userEmail
+  let price = null
+  let buyerSaldo = null
+  let sellerSaldo = null
+  let owner = '' //the seller
+  let email = req.session?.userEmail //the buyer
+  //get price of the item
   try {
     const dbRequest = await request()
 
@@ -274,7 +275,7 @@ async function buyItem(req, res) {
     } catch(err) {
       console.error(err)
     }
-
+  // get saldo of the buyer
   try {
     const dbRequest = await request()
 
@@ -285,7 +286,7 @@ async function buyItem(req, res) {
     } catch(err) {
       console.error(err)
     }
-
+  // get owner of the item
   try {
     const dbRequest = await request()
 
@@ -296,7 +297,7 @@ async function buyItem(req, res) {
     } catch(err) {
       console.error(err)     
   }
-
+  // get saldo of the owner
   try {
     const dbRequest = await request()
 
@@ -307,7 +308,7 @@ async function buyItem(req, res) {
     } catch(err) {
       console.error(err)
   }
-
+// take the money from the buyer away
   try {
     const dbRequest = await request()
     
@@ -318,21 +319,41 @@ async function buyItem(req, res) {
     } catch(err) {
       console.error(err)
     }
+// add the money to the owner
+  try {
+    const dbRequest = await request()
 
+    const result = await dbRequest
+      .input('Email', sql.VarChar(50), owner)
+      .input('Saldo', sql.Money, sellerSaldo + price)
+      .query('UPDATE Uzytkownicy SET Saldo = @Saldo WHERE Email = @Email')
+    } catch(err) {
+      console.error(err)
+    }
+  // change the owner of the product to the buyer
+    try {
+      const dbRequest = await request()
+
+      const result = await dbRequest
+        .input('Id', sql.Int, ID)
+        .input('Email', sql.VarChar(50), email)
+        .query('UPDATE Przedmioty SET Email_Uzytkownika = @Email WHERE Id_Przedmiotu = @Id')
+      } catch(err) {
+        console.error(err)
+    }
+  console.log(ID, price, buyerSaldo, sellerSaldo, owner, email)
+  // change the offer to nottoSell
   try {
     const dbRequest = await request()
 
     const result = await dbRequest
       .input('Id', sql.Int, ID)
-      .input('Saldo', sql.VarChar(50), sellerSaldo + price)
-      .input('Email', sql.VarChar(50), owner)
-      .query('UPDATE Uzytkownicy SET Saldo = @Saldo WHERE Email = @Email')
-    } catch(err) {
-      console.error(err)
-    }
+      .input('oferta', sql.VarChar(30), 'notToSell')
+      .query('UPDATE Przedmioty SET Oferta = @oferta WHERE Id_Przedmiotu = @Id')
+    } catch(err) { 
+        console.error(err) }    
   res.render('buyItem', { message: 'Succesfully bought item with Id' + ID} )
 }
-
 
 async function checkIfNotOwner(req, res) {
   let email = req.session?.userEmail
@@ -386,8 +407,6 @@ async function checkSaldo(req, res) {
     res.render('buyItem', { message: 'You do not have enough money to buy this item!'})
   }
 }
-
-
 
 async function showBuyItem(req, res) {
   res.render('buyItem', { login: req.session?.userLogin })
@@ -453,12 +472,8 @@ app.post('/sellItem', checkOwner)
 app.post('/home', showItems)
 app.post('/buyItem', checkSaldo);
 
-
-
 //app listen
 app.listen(port, (error) =>{
   if(error) throw error
   console.log("App running on port", port)
 })
-
-  
