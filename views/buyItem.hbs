@@ -8,7 +8,9 @@
     <title>Sell items</title>
 </head>
 <body>
-    <h1>Hi {{ login }}, which item would you like to buy?</h1>
+    <div class="header">
+        <h1>Hi {{ login }}, which item would you like to buy?</h1>
+    </div>  
     <form action="/buyItem" method="POST">
         <label for="buy">Choose ID of the item you want to buy</label>
         <input type="number" name="ID" id="manage" min="1" class="input1" required>
