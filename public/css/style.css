@@ -169,3 +169,32 @@ input{
 
 
 /* home */
+
+select{
+    color: rgb(62, 62, 149);
+    background-color: rgb(19, 10, 58);
+    border-color: rgb(62, 62, 149);
+    border-radius: 4px;
+}
+
+tr{
+    color: white;
+}
+.button4{
+    margin: 5px;
+    padding: 4px;
+    border-color: #04AA6D;
+    color: #04AA6D;
+    justify-content: flex-end;
+}
+
+.button4:hover {
+    background-color: #00bb77;
+    color: white;
+}
+
+.header1{
+    background: rgb(19, 10, 58); 
+    display: flex;
+    padding: 20px;
+}
