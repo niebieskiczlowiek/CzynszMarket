@@ -257,8 +257,141 @@ async function sellItem(req, res) {
   }
 }
 
+async function buyItem(req, res) {
+  let ID = req.body.ID
+  let price = ''
+  let buyerSaldo = ''
+  let sellerSaldo = ''
+  let owner = ''
+  let email = req.session?.userEmail
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .query('SELECT Cena FROM Przedmioty WHERE Id_Przedmiotu = @Id')
+      price = result.recordset[0].Cena
+    } catch(err) {
+      console.error(err)
+    }
+
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Email', sql.VarChar(50), email)
+      .query('SELECT Saldo FROM Uzytkownicy WHERE Email = @Email')
+      buyerSaldo = result.recordset[0].Saldo
+    } catch(err) {
+      console.error(err)
+    }
+
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .query('SELECT Email_Uzytkownika FROM Przedmioty WHERE Id_Przedmiotu = @Id')
+      owner = result.recordset[0].Email_Uzytkownika
+    } catch(err) {
+      console.error(err)     
+  }
+
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Email', sql.VarChar(50), owner)
+      .query('SELECT Saldo FROM Uzytkownicy WHERE Email = @Email')
+      sellerSaldo = result.recordset[0].Saldo
+    } catch(err) {
+      console.error(err)
+  }
+
+  try {
+    const dbRequest = await request()
+    
+    const result = await dbRequest
+      .input('Email', sql.VarChar(50), email)
+      .input('Saldo', sql.Money, buyerSaldo - price)
+      .query('UPDATE Uzytkownicy SET Saldo = @Saldo WHERE Email = @Email')
+    } catch(err) {
+      console.error(err)
+    }
+
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .input('Saldo', sql.VarChar(50), sellerSaldo + price)
+      .input('Email', sql.VarChar(50), owner)
+      .query('UPDATE Uzytkownicy SET Saldo = @Saldo WHERE Email = @Email')
+    } catch(err) {
+      console.error(err)
+    }
+  res.render('buyItem', { message: 'Succesfully bought item with Id' + ID} )
+}
 
 
+async function checkIfNotOwner(req, res) {
+  let email = req.session?.userEmail
+  let ID = req.body.ID
+  let owner = ''
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .query('SELECT Email_Uzytkownika FROM Przedmioty WHERE Id_Przedmiotu = @Id')
+      owner = result.recordset[0].Email_Uzytkownika
+    } catch(err) {
+      console.error(err)
+    }
+  if (email != owner) {
+    buyItem(req, res)
+  } else { 
+    res.render('buyItem', { message: 'You are the owner of this item, idiot'})
+  }
+}
+
+async function checkSaldo(req, res) {
+  let ID = req.body.ID
+  let price = ''
+  let saldo = ''
+  let email = req.session?.userEmail
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Id', sql.Int, ID)
+      .query('SELECT Cena FROM Przedmioty WHERE Id_Przedmiotu = @Id')
+      price = result.recordset[0].Cena
+    } catch(err) {
+      console.error(err)
+    } 
+  try {
+    const dbRequest = await request()
+
+    const result = await dbRequest
+      .input('Email', sql.VarChar(50), email)
+      .query('SELECT Saldo FROM Uzytkownicy WHERE Email = @Email')
+      saldo = result.recordset[0].Saldo
+    } catch(err) {
+      console.error(err)
+    }
+  if (price <= saldo) {
+    checkIfNotOwner(req, res)
+  } else {
+    res.render('buyItem', { message: 'You do not have enough money to buy this item!'})
+  }
+}
+
+
+
+async function showBuyItem(req, res) {
+  res.render('buyItem', { login: req.session?.userLogin })
+}
 async function showSellItem(req, res) {
   res.render('sellItem', { login: req.session?.userLogin})
 }
@@ -309,6 +442,7 @@ app.get('/adminPanel', showAdminPanel)
 app.get('/addItem', showAddItem);
 app.get('/deleteItem', showDeleteItem)
 app.get('/sellItem', showSellItem)
+app.get('/buyItem', showBuyItem)
 
 //app posts
 app.post('/login', login);
@@ -317,6 +451,8 @@ app.post('/register', register)
 app.post('/deleteItem', deleteItem)
 app.post('/sellItem', checkOwner)
 app.post('/home', showItems)
+app.post('/buyItem', checkSaldo);
+
 
 
 //app listen
