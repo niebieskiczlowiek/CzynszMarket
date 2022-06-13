@@ -4,14 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/style.css">
     <title>Sell items</title>
 </head>
 <body>
-    <h1>Hi {{ login }}, which item would you like to sell?</h1>
-    <form action="/sellItem" method="POST">
-        <label for="sell">Choose ID of the item you want to sell</label>
-        <input type="number" name="ID" id="manage" min="1" required>
-        <input type="submit" class="btn btn-default" value="ok">
+    <div class="header">
+        <h1>Hi {{ login }}, which item would you like to sell?</h1>
+    </div>
+    <form action="/sellItem" method="POST" class="sells">
+        <div class="sell">
+            <label for="sell">Choose ID of the item you want to sell</label>
+        </div>
+        <div class="inputs">
+            <input type="number" name="ID" id="manage" min="1" class="choose" required>
+            <input type="submit" class="button5" value="Sell">
+        </div>  
     {{ message }}
 </body>
 </html>
