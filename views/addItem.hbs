@@ -4,30 +4,34 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/style.css">
     <title>Add Item</title>
 </head>
 <body>
-    <h1>Add item</h1>
-    <div class="form-group">
+    <div class="header">
+        <h1>Add item</h1>
+    </div>
+    <div class="form-group1">
         <form action="/addItem" method="POST">
+        
             <label for="itemName">Create a name for the item</label>
-            <input type="text" name="itemName" id="itemName" required>
+            <input type="text" name="itemName" id="itemName" class="input1" required>
     
             <label for="owner">Who's going to own it?</label>
-            <input type="text" name="owner" required>
+            <input type="text" name="owner" class="input1" required>
     
             <label for="game">Which game is it from?</label>
-            <input type="text" name="game" id="game" required>
+            <input type="text" name="game" id="game" class="input1" required>
     
             <label for="rarity">What's its rarity?</label>
-            <input type="text" name="rarity" required>
+            <input type="text" name="rarity" class="input1" required>
     
             <label for="price">And finally, how much does it cost</label>
-            <input type="text" name="price">
+            <input type="text" name="price" class="input1">
             
             <div>
-                <input type="submit" class="btn btn-default">
+                <input type="submit" class="button3">
             </div>
         </form>
         {{ message }}
